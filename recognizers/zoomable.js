@@ -22,8 +22,9 @@ export default class Zoomable extends Recognizer{
 
     this.options = _.defaults(options, defaultOptions);
     this.cbs = _.defaults(cbs, defaultCallbacks);
-    
+
     this.onZoomBegin = this.onZoomEnd = () => {};
+    this.setStateNotWorking();
   }
 
   _onZoomBegin = (zoom) => {
@@ -61,7 +62,14 @@ export default class Zoomable extends Recognizer{
   }
 
   onPanResponderGrant(event, gestureState) {
+    // move code to onPanResponderMove
+  }
+
+  onPanResponderMove(event, gestureState) {
     if (!this.isStateValid(event, gestureState)) {
+      if (this.isStateWorking) {
+        this.onZoomEnd();
+      }
       return;
     }
 
@@ -69,27 +77,17 @@ export default class Zoomable extends Recognizer{
     const dx = Math.abs(nativeEvent.touches[0].pageX - nativeEvent.touches[1].pageX);
     const dy = Math.abs(nativeEvent.touches[0].pageY - nativeEvent.touches[1].pageY);
     const distant = Math.sqrt(dx * dx + dy * dy);
-    this.distant = distant;
-    this.onZoomBegin = _.once(this._onZoomBegin);
-  }
-
-  onPanResponderMove(event, gestureState) {
-    if (!this.isStateValid(event, gestureState)) {
-      this.onZoomEnd();
-      return;
-    }
 
     if (this.isStateWorking()) {
-      const { nativeEvent } = event;
-      const dx = Math.abs(nativeEvent.touches[0].pageX - nativeEvent.touches[1].pageX);
-      const dy = Math.abs(nativeEvent.touches[0].pageY - nativeEvent.touches[1].pageY);
-      const distant = Math.sqrt(dx * dx + dy * dy);
       const scale = distant / this.distant;
       if (scale > this.options.zoomInThreshold) {
         this.onZoomBegin(Zoomable.ZOOM_IN);
       } else if (scale < this.options.zoomOutThreshold) {
         this.onZoomBegin(Zoomable.ZOOM_OUT);
       }
+    } else {
+      this.setStateWorking(distant);
+      this.onZoomBegin = _.once(this._onZoomBegin);
     }
   }
 

@@ -7,31 +7,34 @@ import {
   TextInput,
   View
 } from 'react-native';
-import { recognizable, Zoomable } from 'react-native-pinch-zoom-view';
+import { recognizable, Zoomable, Swipeable } from 'react-native-gesture-wrapper';
 
 const ZoomView = recognizable(View);
 
 export default class Example extends Component {
   _onZoomBegin = (zoom) => {
-    console.log('Zoom Start!');
+    console.log('Zoom Start ', zoom);
   }
 
   _onZoomEnd = (zoom) => {
-    console.log('Zoom End!')
+    console.log('Zoom End ', zoom)
+  }
+
+  _onSwipeBegin = (direction) => {
+    console.log('Swipe Start ', direction);
+  }
+
+  _onSwipeEnd = (direction) => {
+    console.log('Swipe End ', direction);
   }
 
   recognizers = [new Zoomable({}, {
     onZoomBegin: this._onZoomBegin,
     onZoomEnd: this._onZoomEnd,
+  }), new Swipeable({}, {
+    onSwipeBegin: this._onSwipeBegin,
+    onSwipeEnd: this._onSwipeEnd,
   })];
-
-  _onSwipeBegin = () => {
-    console.log('Swipe Begin!');
-  }
-
-  _onSwipeEnd = () => {
-    console.log('Swipe End!');
-  }  
 
   render() {
     return (

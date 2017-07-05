@@ -6,14 +6,16 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 
-import { 
+import {
   Recognizer,
-  Zoomable
+  Zoomable,
+  Swipeable,
 } from './recognizers';
 
 export {
   Recognizer,
   Zoomable,
+  Swipeable,
 };
 
 export const recognizable = (TheComponent) => (
@@ -21,7 +23,7 @@ export const recognizable = (TheComponent) => (
     static defaultProps = {
       recognizers: [],
     };
-    
+
     static propTypes = {
       ...TheComponent.propTypes,
       recognizers: PropTypes.arrayOf(PropTypes.instanceOf(Recognizer)),
@@ -39,35 +41,35 @@ export const recognizable = (TheComponent) => (
 
     onPanResponderGrant = (event, gestureState) => {
       const { recognizers } = this.props;
-      return recognizers.forEach(recognizer => recognizer.onPanResponderGrant(event, gestureState));
+      recognizers.forEach(recognizer => recognizer.onPanResponderGrant(event, gestureState));
     }
 
     onPanResponderMove = (event, gestureState) => {
       const { recognizers } = this.props;
-      return recognizers.forEach(recognizer => recognizer.onPanResponderMove(event, gestureState));
+      recognizers.forEach(recognizer => recognizer.onPanResponderMove(event, gestureState));
     }
 
     onPanResponderEnd = (event, gestureState) => {
       const { recognizers } = this.props;
-      return recognizers.forEach(recognizer => recognizer.onPanResponderEnd(event, gestureState));
+      recognizers.forEach(recognizer => recognizer.onPanResponderEnd(event, gestureState));
     }
 
     onPanResponderRelease = (event, gestureState) => {
       const { recognizers } = this.props;
-      return recognizers.forEach(recognizer => recognizer.onPanResponderRelease(event, gestureState));
+      recognizers.forEach(recognizer => recognizer.onPanResponderRelease(event, gestureState));
     }
 
     onPanResponderTerminationRequest = (event, gestureState) => {
       const { recognizers } = this.props;
       return recognizers.every(recognizer => recognizer.onPanResponderTerminationRequest(event, gestureState));
     }
-    
+
     onShouldBlockNativeResponder = (event, gestureState) => {
       const { recognizers } = this.props;
       return recognizers.every(recognizer => recognizer.onShouldBlockNativeResponder(event, gestureState));
     }
 
-       
+
     componentWillMount() {
       this.gestureHandlers = PanResponder.create({
         onStartShouldSetPanResponder: this.onStartShouldSetPanResponder,

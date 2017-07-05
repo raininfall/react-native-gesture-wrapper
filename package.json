@@ -1,5 +1,5 @@
 {
-  "name": "react-native-pinch-zoom-view",
+  "name": "react-native-gesture-wrapper",
   "version": "0.1.2",
   "description": "A pinch-to-zoom view for React Native.",
   "main": "index.js",
